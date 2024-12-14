@@ -1,9 +1,15 @@
+
 "use client";
 import { supabase } from '@/app/createClient';
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@mui/material';
 
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+if (!supabaseUrl) {
+  throw new Error("Supabase URL is not specified. Please set NEXT_PUBLIC_SUPABASE_URL environment variable.");
+}
 const Home = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
