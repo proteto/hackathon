@@ -130,7 +130,7 @@ const Home = () => {
                   type="submit" 
                   variant="contained" 
                   color="primary" 
-                  className="w-full py-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-all duration-300 ease-in-out text-white font-semibold"
+                  className="w-full py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 transition-all duration-300 ease-in-out text-white font-semibold"
                 >
                   Create Account
                 </Button>
@@ -147,9 +147,9 @@ const Home = () => {
       </div>
 
       {isPopupOpen && (
-        <div className="absolute top-0 bottom-0 left-0 right-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-8 rounded-lg">
-            <h2 className="text-2xl font-bold text-center mb-4">
+        <div className="absolute top-0 bottom-0 left-0 right-0 z-60 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-8 rounded-lg shadow-lg w-1/2 max-w-md">
+            <h2 className="text-xl text-gray-600 font-bold text-center my-4">
               Check your email for the confirmation link
             </h2>
             <p className="text-gray-600 text-center">
@@ -159,7 +159,7 @@ const Home = () => {
               <Button 
                 variant="contained" 
                 color="primary" 
-                className="w-full py-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-all duration-300 ease-in-out text-white font-semibold"
+                className="w-full py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 transition-all duration-300 ease-in-out text-white font-semibold"
                 onClick={() => setPopupOpen(false)} href='/login'
               >
                 Go to Login Page

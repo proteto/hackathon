@@ -3,11 +3,13 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@mui/material';
 import { supabase } from '../createClient';
+import { useRouter } from 'next/navigation';
 
 const Home = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,7 +23,10 @@ const Home = () => {
       if (apiError) {
         setError(apiError.message);
       } else if (data) {
-        // User logged in successfully
+        console.log('logined successfully');
+        router.push("/login/confirm").catch((err) => {
+          console.error('Error pushing the route', err);
+        });
       }
     } catch (error) {
       setError(error.message);
@@ -106,7 +111,7 @@ const Home = () => {
                   type="submit" 
                   variant="contained" 
                   color="primary" 
-                  className="w-full py-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-all duration-300 ease-in-out text-white font-semibold"
+                  className="w-full py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 transition-all duration-300 ease-in-out text-white font-semibold"
                 >
                   Login
                 </Button>
@@ -126,3 +131,4 @@ const Home = () => {
 };
 
 export default Home;
+
