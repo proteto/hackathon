@@ -9,6 +9,7 @@ const Home = () => {
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [error, setError] = useState(null);
+  const [isPopupOpen, setPopupOpen] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,6 +28,9 @@ const Home = () => {
       if (signupError) {
         setError(signupError.message);
       }
+
+      setPopupOpen(true);
+
     } catch (error) {
       setError(error.message);
     }
@@ -134,13 +138,36 @@ const Home = () => {
 
               <div className="text-center">
                 <p className="text-sm text-gray-400">
-                  Already have an account? <a href="/auth/login" className="text-indigo-500 hover:text-indigo-700 transition">Log in</a>
+                  Already have an account? <a href="/login" className="text-indigo-500 hover:text-indigo-700 transition">Log in</a>
                 </p>
               </div>
             </form>
           </div>
         </div>
       </div>
+
+      {isPopupOpen && (
+        <div className="absolute top-0 bottom-0 left-0 right-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-8 rounded-lg">
+            <h2 className="text-2xl font-bold text-center mb-4">
+              Check your email for the confirmation link
+            </h2>
+            <p className="text-gray-600 text-center">
+              We have sent a confirmation email to your email account. Please check your email and click on the link to confirm your account.
+            </p>
+            <div className="text-center mt-4">
+              <Button 
+                variant="contained" 
+                color="primary" 
+                className="w-full py-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-all duration-300 ease-in-out text-white font-semibold"
+                onClick={() => setPopupOpen(false)} href='/login'
+              >
+                Go to Login Page
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -26,7 +26,7 @@ const Home = () => {
             </div>
 
             <div className="flex flex-col space-y-4">
-              <Button type="submit" variant="contained" color="success" size="large" className="w-full rounded-full px-8 py-3 text-base font-semibold shadow-md hover:shadow-lg transition-all duration-300 dark:bg-green-600 dark:hover:bg-green-700" href='/auth/login'>
+              <Button type="submit" variant="contained" color="success" size="large" className="w-full rounded-full px-8 py-3 text-base font-semibold shadow-md hover:shadow-lg transition-all duration-300 dark:bg-green-600 dark:hover:bg-green-700" href='/signup'>
                 Get Started
               </Button>
             </div>

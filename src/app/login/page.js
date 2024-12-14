@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@mui/material';
+import { supabase } from '../createClient';
 
 const Home = () => {
   const [email, setEmail] = useState('');
@@ -12,12 +13,16 @@ const Home = () => {
     e.preventDefault();
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { data, error: apiError } = await supabase.auth.signInWithPassword({
         email,
         password
       });
 
-      if (error) throw error;
+      if (apiError) {
+        setError(apiError.message);
+      } else if (data) {
+        // User logged in successfully
+      }
     } catch (error) {
       setError(error.message);
     }
@@ -109,7 +114,7 @@ const Home = () => {
 
               <div className="text-center">
                 <p className="text-sm text-gray-400">
-                  Don't have an account? <a href="/auth/signup" className="text-indigo-500 hover:text-indigo-700 transition">Create Account</a>
+                  Don't have an account? <a href="/signup" className="text-indigo-500 hover:text-indigo-700 transition">Create Account</a>
                 </p>
               </div>
             </form>
@@ -121,4 +126,3 @@ const Home = () => {
 };
 
 export default Home;
-
