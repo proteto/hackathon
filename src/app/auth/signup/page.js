@@ -1,4 +1,5 @@
 "use client";
+import { supabase } from '@/app/createClient';
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@mui/material';
@@ -6,10 +7,26 @@ import { Button } from '@mui/material';
 const Home = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [displayName, setDisplayName] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add form submission logic here
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            displayName
+          }
+        }
+      });
+
+      if (error) throw error;
+    } catch (error) {
+      console.error("Error signing up:", error);
+    }
   };
 
   return (
@@ -48,6 +65,23 @@ const Home = () => {
               </div>
 
               <div className="space-y-4">
+                <div>
+                  <label 
+                    htmlFor="displayName" 
+                    className="block text-sm font-medium text-gray-400 mb-2"
+                  >
+                    Display Name
+                  </label>
+                  <input 
+                    type="text" 
+                    id="displayName" 
+                    value={displayName}
+                    onChange={(e) => setDisplayName(e.target.value)}
+                    required
+                    className="w-full px-4 py-3 rounded-lg border border-gray-700 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300 ease-in-out" 
+                  />
+                </div>
+
                 <div>
                   <label 
                     htmlFor="email" 
