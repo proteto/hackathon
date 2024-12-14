@@ -13,7 +13,7 @@ const Home = () => {
           {/* Image Container */}
           <div className="flex-shrink-0">
             <div className="bg-white dark:bg-gray-800 shadow-md rounded-full p-4 w-full md:w-auto">
-              <Image src="/muslim.png" alt="Alim Logo" width={300} height={300} className="w-full h-full object-contain select-none pointer-events-none rounded-full" />
+              <img src="/muslim.png" alt="Alim Logo" className="w-72 h-72 object-contain select-none pointer-events-none rounded-full" />
             </div>
           </div>
 

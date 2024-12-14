@@ -45,6 +45,7 @@ const Home = () => {
                 alt="Alim Logo" 
                 width={300} 
                 height={300} 
+                priority
                 className="rounded-full border-4 border-indigo-500 shadow-lg" 
               />
               <h2 className="text-3xl font-bold text-white mt-6">

@@ -7,13 +7,48 @@ export default function Confirm() {
   const router = useRouter();
   const [countdown, setCountdown] = useState(3);
 
+  // Redirect user to the appropriate page based on their progress
+  const redirectToPage = async (user) => {
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('email', user.email)
+        .single();
+
+      if (error) {
+        console.error('Error fetching user:', error);
+        return;
+      }
+
+      if (!data) {
+        console.error('User data not found');
+        return;
+      }
+
+      console.log('progress', data.progress);
+
+      // Redirect based on user progress
+      if (data.progress === "0") {
+        router.push("/GreetingQuestions");
+      } else if (data.progress === "1") {
+        router.push("/quiz");
+      } else {
+        console.log('No appropriate page for the user');
+      }
+    } catch (error) {
+      console.error('Error in redirectToPage:', error);
+    }
+  };
+
+  // Use effect to check user and set up countdown
   useEffect(() => {
     const checkAndAddUser = async () => {
       try {
         const user = (await supabase.auth.getUser()).data.user;
 
         if (!user) {
-          console.error('Error fetching user');
+          console.error('No user found');
           return;
         }
 
@@ -23,37 +58,40 @@ export default function Confirm() {
           .eq('email', user.email)
           .single();
 
-        if (error && error.code !== 'PGRST116') {
-          console.error('Error checking user:', error);
-        } else if (!data) {
-          const res = await supabase
-            .from('users')
-            .insert([{ email: user.email, name: user.user_metadata.displayName || '', progress: 0 }]);
+        if (error) {
+          if (error.code === 'PGRST116') {
+            // User doesn't exist, create a new one
+            const res = await supabase
+              .from('users')
+              .insert([{ email: user.email, name: user.user_metadata.displayName || '', progress: 0 }]);
 
-          if (res.error) {
-            console.error('Error adding user:', res.error?.message);
+            if (res.error) {
+              console.error('Error adding user:', res.error?.message);
+            }
           } else {
-            console.log('User added:', res);
+            console.error('Error checking user:', error);
           }
         }
+
+        // Proceed to redirect after countdown
+        await redirectToPage(user);
       } catch (error) {
         console.error('Error in user check:', error);
       }
     };
 
-    checkAndAddUser();
-
+    // Countdown logic to delay redirect
     const timer = setInterval(() => {
       setCountdown((prevCountdown) => {
         if (prevCountdown === 1) {
           clearInterval(timer);
-          setTimeout(() => router.push("/learn"), 0);
+          checkAndAddUser(); // Check and redirect after countdown completes
         }
         return prevCountdown - 1;
       });
-    }, 500);
+    }, 1000);
 
-    return () => clearInterval(timer);
+    return () => clearInterval(timer); // Cleanup on unmount
   }, [router]);
 
   return (
