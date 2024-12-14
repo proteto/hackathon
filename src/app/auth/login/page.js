@@ -1,64 +1,111 @@
 "use client";
 import React, { useState } from 'react';
-import { TextField, Button, Typography, Container, Box } from '@mui/material';
+import Image from 'next/image';
+import { Button } from '@mui/material';
 
-const LoginPage = () => {
+const Home = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log('Email:', email);
-    console.log('Password:', password);
+    // Add form submission logic here
   };
 
   return (
-    <Container maxWidth="xs">
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="center"
-        minHeight="100vh"
-      >
-        <Typography variant="h4" gutterBottom>
-          Login
-        </Typography>
-        <form onSubmit={handleSubmit}>
-          <TextField
-            label="Email"
-            variant="outlined"
-            margin="normal"
-            fullWidth
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <TextField
-            label="Password"
-            type="password"
-            variant="outlined"
-            margin="normal"
-            fullWidth
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ mt: 2 }}
-          >
-            Login
-          </Button>
-        </form>
-      </Box>
-    </Container>
+    <div className="min-h-screen bg-gray-900 flex items-center justify-center p-6">
+      <div className="container mx-auto max-w-4xl">
+        <div className="bg-gray-800 shadow-xl rounded-2xl overflow-hidden flex flex-col md:flex-row">
+          {/* Left Side - Image Section */}
+          <div className="md:w-1/2 bg-gray-900 flex items-center justify-center p-8">
+            <div className="text-center">
+              <Image 
+                src="/muslim.png" 
+                alt="Alim Logo" 
+                width={300} 
+                height={300} 
+                className="rounded-full border-4 border-indigo-500 shadow-lg" 
+              />
+              <h2 className="text-3xl font-bold text-white mt-6">
+                Welcome to Alim
+              </h2>
+              <p className="text-gray-400 mt-4 leading-relaxed">
+                Your comprehensive guide to supporting and empowering your spiritual journey.
+              </p>
+            </div>
+          </div>
+
+          {/* Right Side - Form Section */}
+          <div className="md:w-1/2 bg-gray-900 p-8 flex items-center">
+            <form onSubmit={handleSubmit} className="w-full space-y-6">
+              <div>
+                <h1 className="text-4xl font-extrabold text-white mb-2">
+                  Login
+                </h1>
+                <p className="text-gray-400">
+                  Enter your email and password to login
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label 
+                    htmlFor="email" 
+                    className="block text-sm font-medium text-gray-400 mb-2"
+                  >
+                    Email Address
+                  </label>
+                  <input 
+                    type="email" 
+                    id="email" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="w-full px-4 py-3 rounded-lg border border-gray-700 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300 ease-in-out" 
+                  />
+                </div>
+
+                <div>
+                  <label 
+                    htmlFor="password" 
+                    className="block text-sm font-medium text-gray-400 mb-2"
+                  >
+                    Password
+                  </label>
+                  <input 
+                    type="password" 
+                    id="password" 
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="w-full px-4 py-3 rounded-lg border border-gray-700 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300 ease-in-out" 
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Button 
+                  type="submit" 
+                  variant="contained" 
+                  color="primary" 
+                  className="w-full py-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-all duration-300 ease-in-out text-white font-semibold"
+                >
+                  Login
+                </Button>
+              </div>
+
+              <div className="text-center">
+                <p className="text-sm text-gray-400">
+                  Don't have an account? <a href="/auth/signup" className="text-indigo-500 hover:text-indigo-700 transition">Create Account</a>
+                </p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
-export default LoginPage;
+export default Home;
 
