@@ -1,4 +1,5 @@
 "use client";
+import { supabase } from '@/app/createClient';
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@mui/material';
@@ -7,9 +8,19 @@ const Home = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add form submission logic here
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) throw error;
+    } catch (error) {
+      console.error("Error logging in:", error);
+    }
   };
 
   return (
@@ -108,4 +119,3 @@ const Home = () => {
 };
 
 export default Home;
-
