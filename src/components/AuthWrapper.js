@@ -9,8 +9,12 @@ const AuthWrapper = ({ children }) => {
 
   useEffect(() => {
     const checkAuthStatus = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
+      const { data, error } = await supabase.auth.getUser();
+      if (error) {
+        console.error('Error fetching user:', error);
+      } else {
+        setUser(data?.user);
+      }
       setIsLoading(false);
     };
 
@@ -29,6 +33,19 @@ const AuthWrapper = ({ children }) => {
     return () => subscription?.unsubscribe?.();
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error('Error logging out:', error);
+      } else {
+        setUser(null);
+      }
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
   if (isLoading) {
     return <PageLoader />;
   }
@@ -38,13 +55,13 @@ const AuthWrapper = ({ children }) => {
   }
 
   return (
-    <html lang="en">
-      <body>
+    <>
+      <div>
         {children}
-      </body>
-    </html>
+        <button onClick={handleLogout}>Logout</button>
+      </div>
+    </>
   );
 };
 
 export default AuthWrapper;
-

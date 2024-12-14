@@ -1,4 +1,3 @@
-/*************  ✨ Codeium Command 🌟  *************/
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -6,7 +5,7 @@ import { supabase } from "@/app/createClient";
 
 export default function Confirm() {
   const router = useRouter();
-  const [countdown, setCountdown] = useState(5);
+  const [countdown, setCountdown] = useState(3);
 
   useEffect(() => {
     const checkAndAddUser = async () => {
@@ -52,7 +51,7 @@ export default function Confirm() {
         }
         return prevCountdown - 1;
       });
-    }, 1000);
+    }, 500);
 
     return () => clearInterval(timer);
   }, [router]);
@@ -68,5 +67,3 @@ export default function Confirm() {
   );
 }
 
-
-/******  88c5a360-c085-4170-ae6f-4c25a25ba626  *******/
