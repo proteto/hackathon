@@ -1,12 +1,49 @@
+/*************  ✨ Codeium Command 🌟  *************/
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { supabase } from "@/app/createClient";
 
 export default function Confirm() {
   const router = useRouter();
   const [countdown, setCountdown] = useState(5);
 
   useEffect(() => {
+    const checkAndAddUser = async () => {
+      try {
+        const user = (await supabase.auth.getUser()).data.user;
+
+        if (!user) {
+          console.error('Error fetching user');
+          return;
+        }
+
+        const { data, error } = await supabase
+          .from('users')
+          .select('*')
+          .eq('email', user.email)
+          .single();
+
+        if (error && error.code !== 'PGRST116') {
+          console.error('Error checking user:', error);
+        } else if (!data) {
+          const res = await supabase
+            .from('users')
+            .insert([{ email: user.email, name: user.user_metadata.displayName || '', progress: 0 }]);
+
+          if (res.error) {
+            console.error('Error adding user:', res.error?.message);
+          } else {
+            console.log('User added:', res);
+          }
+        }
+      } catch (error) {
+        console.error('Error in user check:', error);
+      }
+    };
+
+    checkAndAddUser();
+
     const timer = setInterval(() => {
       setCountdown((prevCountdown) => {
         if (prevCountdown === 1) {
@@ -31,3 +68,5 @@ export default function Confirm() {
   );
 }
 
+
+/******  88c5a360-c085-4170-ae6f-4c25a25ba626  *******/

@@ -1,9 +1,13 @@
-import React from 'react'
+import AuthWrapper from '@/components/AuthWrapper'
 
 const page = () => {
+
   return (
-    <div>page</div>
+    <AuthWrapper>
+      <div>page</div>
+    </AuthWrapper>
   )
 }
 
 export default page
+

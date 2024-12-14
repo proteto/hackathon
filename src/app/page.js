@@ -1,8 +1,11 @@
-import React from 'react';
+"use client";
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@mui/material';
+import PageLoader from '@/components/PageLoader';
 
 const Home = () => {
+
   return (
     <div className="relative bg-white dark:bg-gray-900 transition-colors duration-300 ease-in-out min-h-screen flex items-center justify-center">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
