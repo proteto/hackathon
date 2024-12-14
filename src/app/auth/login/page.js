@@ -1,5 +1,3 @@
-"use client";
-import { supabase } from '@/app/createClient';
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@mui/material';
@@ -7,6 +5,7 @@ import { Button } from '@mui/material';
 const Home = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,7 +18,7 @@ const Home = () => {
 
       if (error) throw error;
     } catch (error) {
-      console.error("Error logging in:", error);
+      setError(error.message);
     }
   };
 
@@ -94,6 +93,8 @@ const Home = () => {
                 </div>
               </div>
 
+              <div className="text-red-500">{error}</div>
+
               <div>
                 <Button 
                   type="submit" 
@@ -119,3 +120,4 @@ const Home = () => {
 };
 
 export default Home;
+

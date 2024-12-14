@@ -8,12 +8,13 @@ const Home = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
+  const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const { data, error } = await supabase.auth.signUp({
+      const { data, error: signupError } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -23,9 +24,11 @@ const Home = () => {
         }
       });
 
-      if (error) throw error;
+      if (signupError) {
+        setError(signupError.message);
+      }
     } catch (error) {
-      console.error("Error signing up:", error);
+      setError(error.message);
     }
   };
 
@@ -118,6 +121,7 @@ const Home = () => {
               </div>
 
               <div>
+                <p className="text-red-500 text-sm text-center">{error}</p>
                 <Button 
                   type="submit" 
                   variant="contained" 
@@ -142,3 +146,4 @@ const Home = () => {
 };
 
 export default Home;
+
