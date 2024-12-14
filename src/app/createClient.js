@@ -2,7 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 
 export const supabase = createClient(
   'https://yqhhzzbhwhxbwbaicpgs.supabase.co',
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlxaGh6emJod2h4YndiYWljcGdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM5NzMxMDMsImV4cCI6MjA0OTU0OTEwM30.NrY87XCePxDqb7Pq73gd5kgZuaW_e3Fngcylv49F9Wg'
 );
 
 export const fetchUsers = async () => {
