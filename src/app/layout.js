@@ -29,8 +29,7 @@ export default function RootLayout({ children }) {
   return (
     <html className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
-        {isLoading ? <PageLoader /> : null}
-        {children}
+        {isLoading ? <PageLoader /> : <div>{children}</div>}
       </body>
     </html>
   );

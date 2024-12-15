@@ -2,10 +2,11 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { supabase } from "@/app/createClient";
+import { CircularProgress } from "@mui/material";
 
 export default function Confirm() {
   const router = useRouter();
-  const [countdown, setCountdown] = useState(3);
+  const [countdown, setCountdown] = useState(1);
 
   // Redirect user to the appropriate page based on their progress
   const redirectToPage = async (user) => {
@@ -98,8 +99,9 @@ export default function Confirm() {
     <div className="min-h-screen bg-gray-900 flex items-center justify-center p-6">
       <div className="text-center">
         <h2 className="text-3xl font-bold text-white">
-          Login successfully, redirecting in {countdown} seconds...
+          Login successful
         </h2>
+        <CircularProgress color="success" />
       </div>
     </div>
   );

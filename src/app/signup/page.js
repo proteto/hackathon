@@ -2,17 +2,21 @@
 import { supabase } from '@/app/createClient';
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Button } from '@mui/material';
+import Button from '@/components/ui/Button';
+import { CircularProgress } from '@mui/material';
 
 const Home = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(null);  
+  const [loading, setLoading] = useState(false);
   const [isPopupOpen, setPopupOpen] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setLoading(true);
 
     try {
       const { data, error: signupError } = await supabase.auth.signUp({
@@ -31,9 +35,16 @@ const Home = () => {
 
       setPopupOpen(true);
 
+      setLoading(false);
+
     } catch (error) {
       setError(error.message);
     }
+  };
+
+  const handleRedirect = () => {
+    () => setPopupOpen(false)
+    window.location.href = '/login';
   };
 
   return (
@@ -127,13 +138,13 @@ const Home = () => {
 
               <div>
                 <p className="text-red-500 text-sm text-center">{error}</p>
-                <Button 
+                <Button
                   type="submit" 
-                  variant="contained" 
-                  color="primary" 
-                  className="w-full py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 transition-all duration-300 ease-in-out text-white font-semibold"
+                  variant="contained"
+                  color="primary"
+                  className="w-full py-3 rounded-full bg-green-600 hover:bg-green-700 transition-all duration-300 ease-in-out text-white font-semibold"
                 >
-                  Create Account
+                  {loading ? <div className="flex justify-center items-center space-x-2"> <p className="text-white">Signing up </p> <CircularProgress color="inherit" size={20} /> </div> : 'Sign Up'}                  
                 </Button>
               </div>
 
@@ -161,7 +172,7 @@ const Home = () => {
                 variant="contained" 
                 color="primary" 
                 className="w-full py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 transition-all duration-300 ease-in-out text-white font-semibold"
-                onClick={() => setPopupOpen(false)} href='/login'
+                onClick={handleRedirect} href='/login'
               >
                 Go to Login Page
               </Button>

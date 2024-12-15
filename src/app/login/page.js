@@ -1,18 +1,22 @@
 "use client";
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Button } from '@mui/material';
 import { supabase } from '../createClient';
 import { useRouter } from 'next/navigation';
+import Button from '@/components/ui/Button';
+import { CircularProgress } from '@mui/material';
 
 const Home = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setLoading(true);
 
     try {
       const { data, error: apiError } = await supabase.auth.signInWithPassword({
@@ -21,16 +25,16 @@ const Home = () => {
       });
 
       if (apiError) {
-        setError(apiError.message);
+        setError(apiError?.message);
       } else if (data) {
         console.log('logined successfully');
-        router.push("/login/confirm").catch((err) => {
-          console.error('Error pushing the route', err);
-        });
+        router.push("/login/confirm");
       }
     } catch (error) {
-      setError(error.message);
+      setError(error?.message);
     }
+
+    setLoading(false);
   };
 
   return (
@@ -108,13 +112,13 @@ const Home = () => {
               <div className="text-red-500">{error}</div>
 
               <div>
-                <Button 
+                <Button
                   type="submit" 
-                  variant="contained" 
-                  color="primary" 
-                  className="w-full py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 transition-all duration-300 ease-in-out text-white font-semibold"
+                  variant="contained"
+                  color="primary"
+                  className="w-full py-3 rounded-full bg-green-600 hover:bg-green-700 transition-all duration-300 ease-in-out text-white font-semibold"
                 >
-                  Login
+                  {loading ? <div className="flex justify-center items-center space-x-2"> <p className="text-white">Logging In </p> <CircularProgress color="inherit" size={20} /> </div> : 'Login'}
                 </Button>
               </div>
 

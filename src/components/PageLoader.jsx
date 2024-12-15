@@ -35,15 +35,14 @@ const PageLoader = () => {
   return (
     <div 
       className={`
-        fixed inset-0 z-[9999] 
-        bg-background dark:bg-background 
+        fixed inset-0 z-[9999] bg-gray-900 
         flex flex-col items-center justify-center 
         transition-all duration-500 ease-in-out
         ${isLoading ? 'opacity-100' : 'opacity-0'}
       `}>
-      <p className='text-center text-foreground font-bold dark:text-foreground uppercase text-3xl mb-4'> Alim </p>
+      <p className='text-center text-green-500 font-extrabold uppercase text-3xl mb-4 '> Alim </p>
       <div 
-        className="h-3 rounded-full overflow-hidden w-96 bg-foreground transform origin-left"
+        className="h-3 rounded-full overflow-hidden w-96 bg-green-500 transform origin-left"
         style={{
           animation: 'loading-bar 1.5s cubic-bezier(0.4, 0, 0.2, 1)',
           transformOrigin: 'left'
