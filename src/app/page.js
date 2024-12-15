@@ -15,7 +15,6 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Content Container */}
           <div className="text-center md:text-left max-w-md space-y-6 select-none">
             <div>
               <h1 className="text-3xl md:text-5xl font-extrabold text-gray-50 mb-4 tracking-wide leading-relaxed">
