@@ -6,13 +6,13 @@ const SideBar = () => {
     const [activeTab, setActiveTab] = useState('home');
 
     const sidebarItems = [
-        { icon: Home, name: 'Home', key: 'Learn', path: 'home/learn' },
+        { icon: Home, name: 'Home', key: 'Learn', path: 'home' },
         { icon: SettingsIcon, name: 'Tools', key: 'Tools', path: 'tools' },
         { icon: User2Icon, name: 'Community', key: 'Community', path: 'community' },
     ];
 
     const bottomItems = [
-        { icon: UserCircle2, name: 'Profile', key: 'Profile', path: 'profile' },
+        { icon: UserCircle2, name: 'Profile', key: 'Profile', path: 'home/profile' },
         { icon: Settings, name: 'Sign Out', key: 'SignOut', path: 'signout' },
     ];
 

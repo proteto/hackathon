@@ -177,16 +177,17 @@ const QuizInterface = () => {
 
     if (showResult) {
         return (
-            <div className="fixed inset-0 bg-gray-900 flex items-center justify-center p-4">
-                <div className="max-w-md w-full text-center">
-                    <h2 className="text-white font-bold text-xl">Quiz completed!</h2>
-                    <p className="text-gray-400 pt-2 text-lg">
+            <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm flex items-center justify-center"> {/* Added backdrop blur */}
+                <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full text-center"> {/* Improved styling */}
+                    <h2 className="text-2xl font-bold mb-4">Quiz completed!</h2>
+                    <p className="text-gray-600 mb-6">
                         {allCorrect ? "You have covered fundamentals" : "Your level is set to beginner"}
                     </p>
                     <button
-                        onClick={() => handleOnComplete({})}
-                        className="text-white py-2 px-6 h-12 rounded-full border-2 border-green-500 hover:bg-green-500 transition-all duration-500 mt-5"
-                    >Continue
+                        onClick={handleOnComplete}
+                        className="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-6 rounded-md focus:outline-none focus:ring-2 focus:ring-green-300"
+                    >
+                        Continue
                     </button>
                 </div>
             </div>
@@ -194,74 +195,55 @@ const QuizInterface = () => {
     }
 
     return (
-        <div className="fixed inset-0 bg-gray-900 flex flex-col p-4 md:p-8">
-            {/* Progress Section */}
-            <div className='w-full flex items-center justify-center rounded-full border-b-2 border-green-500 h-16 md:h-24'>
-                <div className="w-full max-w-7xl flex items-center space-x-4">
-                    <div className="flex-grow bg-gray-700 h-2 rounded-full overflow-hidden">
-                        <div
-                            className="bg-green-500 h-full transition-all duration-300"
-                            style={{ width: `${progress}%` }}
-                        />
-                    </div>
+        <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm flex flex-col items-center justify-center p-4 md:p-8"> {/* Added backdrop blur */}
+            <div className="w-full max-w-2xl"> {/* Added max-width */}
+                {/* Progress Bar */}
+                <div className="bg-gray-200 rounded-full h-4 mb-6">
+                    <div className="bg-green-500 h-4 rounded-full" style={{ width: `${progress}%` }} />
                 </div>
-            </div>
 
-            {/* Question and Options */}
-            <div className="flex flex-col items-center justify-center flex-1">
-                {currentQuestion && (
-                    <div className="max-w-3xl w-full space-y-6">
-                        <h2 className="text-xl font-bold text-white text-center">{currentQuestion.question}</h2>
-                        <p className='text-gray-400 text-center'>{currentQuestion.description}</p>
-                        <div className="space-y-4">
-                            {currentQuestion.options.map((option, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() => handleOptionSelect(option)}
-                                    disabled={checked}
-                                    className={`w-full text-left p-4 rounded-xl border-2 transition 
-                                            ${selectedOption === option
-                                            ? checked ? (currentQuestion.options.indexOf(option) === parseInt(currentQuestion.answer) ? 'bg-green-100 border-green-500 text-green-500' : 'bg-red-100 border-red-500 text-red-500') : 'bg-green-100 border-green-500 text-green-500'
-                                            : checked && currentQuestion.options.indexOf(option) === parseInt(currentQuestion.answer) ? 'bg-green-100 border-green-500 text-green-500' : 'border-gray-200 bg-gray-900 text-white hover:bg-gray-700'}`}
-                                >
-                                    {option}
-                                </button>
-                            ))}
-                        </div>
-                        {checkResult && (
-                            <p className={`mt-4 text-center font-bold ${checkResult === 'Correct' ? 'text-green-500' : 'text-red-500'}`}>
-                                {checkResult}
-                            </p>
-                        )}
+                {/* Question and Options */}
+                <div className="bg-white p-6 rounded-lg shadow-lg">
+                    <h2 className="text-xl font-bold mb-4 text-gray-800">{currentQuestion?.question}</h2>
+                    <p className="text-gray-600 mb-4">{currentQuestion?.description}</p>
+                    <div className="space-y-4">
+                        {currentQuestion?.options?.map((option, index) => (
+                            <button
+                                key={index}
+                                onClick={() => handleOptionSelect(option)}
+                                disabled={checked}
+                                className={`w-full text-left p-4 rounded-md border border-gray-300 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500
+                                    ${selectedOption === option
+                                        ? checked ? (currentQuestion.options.indexOf(option) === parseInt(currentQuestion.answer) ? 'bg-green-100 border-green-500 text-green-500' : 'bg-red-100 border-red-500 text-red-500') : 'bg-green-100 border-green-500 text-green-500'
+                                        : checked && currentQuestion.options.indexOf(option) === parseInt(currentQuestion.answer) ? 'bg-green-100 border-green-500 text-green-500' : ''}`}
+                            >
+                                {option}
+                            </button>
+                        ))}
                     </div>
-                )}
-            </div>
+                    {checkResult && (
+                        <p className={`mt-4 text-center font-bold ${checkResult === 'Correct' ? 'text-green-500' : 'text-red-500'}`}>
+                            {checkResult}
+                        </p>
+                    )}
+                </div>
 
 
-            {/* Controls Section */}
-            <div className="w-full text-white p-2 rounded-full transition border-t-2 border-green-500 h-16 md:h-24 flex justify-end items-center">
-                {
-                    !checked ?
-                        (
-                            <button
-                                disabled={!selectedOption}
-                                onClick={handleCheck}
-                                className={`text-white py-2 px-6 h-12 rounded-full border-2  transition-all duration-500  ${selectedOption ? ' border-yellow-500 hover:bg-yellow-500' : 'border-gray-700  bg-gray-700 cursor-not-allowed'}`}
-                            >
-                                Check
-                            </button>
-                        )
-                        :
-                        (
-                            <button
-                                onClick={handleContinue}
-                                className="text-white py-2 px-6 h-12 rounded-full border-2 border-green-500 hover:bg-green-500 transition-all duration-500  flex items-center space-x-2"
-                            >
-                                <ArrowRight size={24} />
-                                <span>Continue</span>
-                            </button>
-                        )
-                }
+                {/* Controls Section */}
+                <div className="mt-6">
+                    <button
+                        disabled={!checked && !selectedOption}
+                        onClick={!checked ? handleCheck : handleContinue}
+                        className={`w-full bg-${!checked ? (selectedOption ? 'yellow' : 'gray') : 'green'}-500 hover:bg-${!checked ? (selectedOption ? 'yellow' : 'gray') : 'green'}-600 text-white font-medium py-2 px-6 rounded-md focus:outline-none focus:ring-2 focus:ring-${!checked ? (selectedOption ? 'yellow' : 'gray') : 'green'}-300 mt-4 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed`}
+                    >
+                        {!checked ? 'Check' : (
+                            <>
+                                <ArrowRight size={20} />
+                                Continue
+                            </>
+                        )}
+                    </button>
+                </div>
             </div>
         </div>
     );
