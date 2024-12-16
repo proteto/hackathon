@@ -159,19 +159,19 @@ const Home = () => {
       </div>
 
       {isPopupOpen && (
-        <div className="absolute top-0 bottom-0 left-0 right-0 z-60 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-8 rounded-lg shadow-lg w-1/2 max-w-md">
-            <h2 className="text-xl text-gray-600 font-bold text-center my-4">
+        <div className="absolute top-0 bottom-0 left-0 right-0 z-60 bg-white/50 bg-opacity-50 flex items-center justify-center">
+          <div className="bg-gray-900 p-8 rounded-lg shadow-lg w-2/3 max-w-2xl">
+            <h2 className="text-2xl text-gray-100 font-bold text-center mt-4 mb-10">
               Check your email for the confirmation link
             </h2>
-            <p className="text-gray-600 text-center">
+            <p className="text-gray-600 text-center mb-5">
               We have sent a confirmation email to your email account. Please check your email and click on the link to confirm your account.
             </p>
             <div className="text-center mt-4">
               <Button 
                 variant="contained" 
                 color="primary" 
-                className="w-full py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 transition-all duration-300 ease-in-out text-white font-semibold"
+                className="w-full py-3 rounded-full bg-green-600 hover:bg-green-700 transition-all duration-300 ease-in-out text-white font-semibold"
                 onClick={handleRedirect} href='/login'
               >
                 Go to Login Page

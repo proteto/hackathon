@@ -41,14 +41,14 @@ const Status = ({ onButtonClick }) => {
         try {
             const { error } = await supabase
                 .from("users")
-                .update({ level: 0, progress: 1 })
+                .update({ level: 1, progress: 1 })
                 .match({ email: user.email });
 
             if (error) {
-                console.error("Error updating country:", error);
+                console.error("Error updating user:", error.message || error);
             }
         } catch (error) {
-            console.error("Error during updating country:", error);
+            console.error("Error during updating user:", error.message || error);
         }
         router.push("/home");
     };
@@ -68,10 +68,10 @@ const Status = ({ onButtonClick }) => {
                     .match({ email: user.email });
 
                 if (error) {
-                    console.error("Error updating country:", error);
+                    console.log(error);
                 }
             } catch (error) {
-                console.error("Error during updating country:", error);
+                console.log(error);
             }
         }
     };

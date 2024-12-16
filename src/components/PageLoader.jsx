@@ -21,7 +21,7 @@ const PageLoader = () => {
     const visibilityTimer = setTimeout(() => {
       setIsVisible(false);  
       document.documentElement.style.overflow = 'auto';
-    }, 2000);
+    }, 1000);
 
     return () => {
       clearTimeout(loadingTimer);

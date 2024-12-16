@@ -2,6 +2,55 @@
     "basic": [
         {
             "id": 1,
+            "question": "How many times do Muslims pray daily?",
+            "description": "This question is to check your level",
+            "options": [
+                "3",
+                "4",
+                "5",
+                "6"
+            ],
+            "answer": 1
+        },
+        {
+            "id": 2,
+            "question": "What is your level?",
+            "description": "This question will help you determine what is the best for you",
+            "options": [
+                "basic",
+                "moderate",
+                "advanced"
+            ],
+            "answer": 0
+        },
+        {
+            "id": 3,
+            "question": "What is the name of the tribe of our Holy Prophet?",
+            "description": "Our Holy prophet's tribe is one of the most important",
+            "options": [
+                "Banu Aws",
+                "Banu Umayyah",
+                "Banu Makhzum",
+                "Banu Quraysh"
+            ],
+            "answer": 3
+        },
+        {
+            "id": 4,
+            "question": "Which battle is considered the first major battle in Islamic history?",
+            "description": "This is one of the most important battles in Islamic history",
+            "options": [
+                "Battle of Uhud",
+                "Battle of Badr",
+                "Battle of Khandaq",
+                "Battle of Hunayn"
+            ],
+            "answer": 1
+        }
+    ],
+    "moderate": [
+        {
+            "id": 1,
             "question": "Are you new Muslim?",
             "description": "This question is to know more about you",
             "options": [
@@ -46,54 +95,49 @@
             "answer": 1
         }
     ],
-    "moderate": [
-        {
-            "id": 1,
-            "question": "How many years did Muslims rule Spain?",
-            "description": "The muslims had a long rule in Spain",
-            "options": [
-                "500",
-                "800",
-                "700",
-                "600"
-            ],
-            "answer": 2
-        },
-        {
-            "id": 2,
-            "question": "Who was the first Caliph of Islam?",
-            "description": "The first caliph of Islam is an important figure to know",
-            "options": [
-                "Ali ibn Abi Talib",
-                "Abu Bakr",
-                "Uthman ibn Affan",
-                "Umar ibn al-Khattab"
-            ],
-            "answer": 1
-        }
-    ],
     "advanced": [
         {
             "id": 1,
-            "question": "Who built the Ka'bah?",
-            "description": "The Ka'bah is the most holy site for muslims",
+            "question": "Are you new Muslim?",
+            "description": "This question is to know more about you",
             "options": [
-                "Prophet Ibrahim and his son Ismail",
-                "Prophet Musa",
-                "Prophet Muhammad",
-                "Prophet Dawood"
+                "yes",
+                "no"
+            ],
+            "answer": 1
+        },
+        {
+            "id": 2,
+            "question": "What is your level?",
+            "description": "This question will help you determine what is the best for you",
+            "options": [
+                "basic",
+                "moderate",
+                "advanced"
             ],
             "answer": 0
         },
         {
-            "id": 2,
-            "question": "What is the 'Golden Age' of Islamic civilization?",
-            "description": "The 'Golden Age' had many important scholars and discoveries",
+            "id": 3,
+            "question": "What is the name of the tribe of our Holy Prophet?",
+            "description": "Our Holy prophet's tribe is one of the most important",
             "options": [
-                "1000 - 1200 CE",
-                "750 - 1258 CE",
-                "1300 - 1500 CE",
-                "1500-1700 CE"
+                "Banu Aws",
+                "Banu Umayyah",
+                "Banu Makhzum",
+                "Banu Quraysh"
+            ],
+            "answer": 3
+        },
+        {
+            "id": 4,
+            "question": "Which battle is considered the first major battle in Islamic history?",
+            "description": "This is one of the most important battles in Islamic history",
+            "options": [
+                "Battle of Uhud",
+                "Battle of Badr",
+                "Battle of Khandaq",
+                "Battle of Hunayn"
             ],
             "answer": 1
         }

@@ -6,7 +6,7 @@ const SideBar = () => {
     const [activeTab, setActiveTab] = useState('home');
 
     const sidebarItems = [
-        { icon: Home, name: 'Learn', key: 'Learn', path: 'home/learn' },
+        { icon: Home, name: 'Home', key: 'Learn', path: 'home/learn' },
         { icon: SettingsIcon, name: 'Tools', key: 'Tools', path: 'tools' },
         { icon: User2Icon, name: 'Community', key: 'Community', path: 'community' },
     ];

@@ -1,332 +1,270 @@
 "use client";
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { ChevronLeft, ArrowRight } from 'lucide-react';
+import React, { useState, useCallback } from 'react';
+import { ArrowRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import questionsData from './questions.json';
-import { CircularProgress } from '@mui/material';
+import { supabase } from '@/app/createClient';
+const questionsData = [
+    {
+        "id": 1,
+        "question": "How many make up the pillars of Islam?",
+        "description": "This is a core priciple of Islam",
+        "options": [
+            "4",
+            "5",
+            "6",
+            "7"
+        ],
+        "answer": 1
+    },
+    {
+        "id": 2,
+        "question": "How many make up the articles of faith of islam?",
+        "description": "This is a core priciple of Islam",
+        "options": [
+            "4",
+            "5",
+            "6",
+            "7"
+        ],
+        "answer": 2
+    },
+    {
+        "id": 3,
+        "question": "What is the name of the tribe of our Holy Prophet?",
+        "description": "Our Holy prophet's tribe is one of the most important",
+        "options": [
+            "Banu Aws",
+            "Banu Umayyah",
+            "Banu Makhzum",
+            "Banu Quraysh"
+        ],
+        "answer": 3
+    },
+    {
+        "id": 4,
+        "question": "Which battle is considered the first major battle in Islamic history?",
+        "description": "This is one of the most important battles in Islamic history",
+        "options": [
+            "Battle of Uhud",
+            "Battle of Badr",
+            "Battle of Khandaq",
+            "Battle of Hunayn"
+        ],
+        "answer": 1
+    },
+    {
+        "id": 5,
+        "question": "How many Surahs are there in Quran?",
+        "description": "This id the key component of Quran",
+        "options": [
+            "114",
+            "115",
+            "116",
+            "117"
+        ],
+        "answer": 0
+    },
+    {
+        "id": 6,
+        "question": "Who is the father of prophet muhammed(s)",
+        "description": "This is a basic knowledge in islam",
+        "options": [
+            "Abu Bakr",
+            "Abdullah",
+            "Abdu Raheem"
+        ],
+        "answer": 1
+    },
+    {
+        "id": 7,
+        "question": "who build Ka'ba",
+        "description": "This is a basic knowledge in islam",
+        "options": [
+            "Prophet Ibrahim  and his son Ismail",
+            "Prophet sulaimain",
+            "Prophet muhammad",
+            "Prophet Ya'koob and his son yusuf"
+        ],
+        "answer": 0
+    }
+];
 
-const renderSVGCharacter = (characterConfig) => {
-    return (
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox={characterConfig.viewBox}
-            className={characterConfig.className}
-        >
-            {characterConfig.elements.map((element, index) => {
-                switch (element.type) {
-                    case 'circle':
-                        return <circle key={index} {...element} />;
-                    case 'rect':
-                        return <rect key={index} {...element} />;
-                    case 'path':
-                        return <path key={index} {...element} />;
-                    default:
-                        return null;
-                }
-            })}
-        </svg>
-    );
-};
-
-
-const QuizInterface = ({ initialOnComplete }) => {
+const QuizInterface = () => {
     const router = useRouter();
-    const [currentCategory, setCurrentCategory] = useState('basic');
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [selectedOptions, setSelectedOptions] = useState({});
-    const [typedText, setTypedText] = useState('');
-    const [quizComplete, setQuizComplete] = useState(false);
-    const [categoryScores, setCategoryScores] = useState({
-        basic: { correct: 0 },
-        moderate: { correct: 0 },
-        advanced: { correct: 0 }
-    });
-    const [userLevel, setUserLevel] = useState(null);
-    const [showAnalysis, setShowAnalysis] = useState(false);
-    const [analysisProgress, setAnalysisProgress] = useState(0);
-    const categoryOrder = ['basic', 'moderate', 'advanced'];
-    const [unansweredCategories, setUnansweredCategories] = useState([])
-    const processedOptions = useRef({});
-    const questions = categoryOrder.reduce((acc, category) => {
-        acc[category] = questionsData[category].map((q) => ({
-            ...q,
-            character: renderSVGCharacter({
-                viewBox: "0 0 200 200",
-                className: "w-48 h-48",
-                elements: [{ type: "circle", cx: "100", cy: "100", r: "90", fill: "#F0F0F0" }],
-            }),
-            options: q.options,
+    const [selectedOption, setSelectedOption] = useState(null);
+    const [showResult, setShowResult] = useState(false);
+    const [allCorrect, setAllCorrect] = useState(true);
+    const [checked, setChecked] = useState(false);
+    const [progress, setProgress] = useState(0);
+    const [checkResult, setCheckResult] = useState(null);
 
-        }));
-        return acc;
-    }, {});
-
-
-    const currentQuestions = questions[currentCategory];
-    const currentQuestion = currentQuestions?.[currentQuestionIndex];
-
-    const handleOnComplete = useCallback(async (selections) => {
-        try {
-            console.log('Onboarding completed:', selections);
-            await fetch('/api/onboarding', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(selections),
-            });
-        } catch (error) {
-            console.error('Error during onboarding:', error);
-        }
-    }, [router]);
-
-    useEffect(() => {
-        if (quizComplete) return
-        const currentQuestionText = currentQuestion?.question || '';
-        if (typedText.length < currentQuestionText.length) {
-            const timeout = setTimeout(() => {
-                setTypedText(currentQuestionText.slice(0, typedText.length + 1));
-            }, 20);
-            return () => clearTimeout(timeout);
-        }
-
-    }, [typedText, currentQuestionIndex, currentCategory, currentQuestions, quizComplete, currentQuestion]);
-
-
-    const calculateProgressPercentage = useCallback(() => {
-        if (!currentQuestions || currentQuestions.length === 0) return 0;
-        return ((currentQuestionIndex + 1) / currentQuestions.length) * 100;
-    }, [currentQuestions, currentQuestionIndex]);
-
+    const currentQuestion = questionsData[currentQuestionIndex];
 
     const handleOptionSelect = (option) => {
-        setSelectedOptions(prev => ({ ...prev, [currentQuestion?.question]: option }));
+        setSelectedOption(option);
     };
-    const calculateCategoryAccuracy = useCallback((category) => {
-        const total = questions[category]?.length || 0;
-        if (total === 0) return 0;
 
-        const correct = categoryScores[category]?.correct || 0;
-        const accuracy = correct / total;
+    const handleCheck = () => {
+        if (currentQuestion && selectedOption !== null) {
+            const isCorrect = currentQuestion.options.indexOf(selectedOption) === parseInt(currentQuestion.answer);
+            if (!isCorrect) {
+                setAllCorrect(false)
+            }
+            setCheckResult(isCorrect ? "Correct" : "Incorrect");
+            setChecked(true);
+            setProgress((currentQuestionIndex + 1) * (100 / questionsData.length))
 
-        return Number.isNaN(accuracy) ? 0 : accuracy
-    }, [questions, categoryScores]);
+        }
+    };
 
 
     const handleContinue = () => {
-        if (!currentQuestion || !selectedOptions[currentQuestion.question]) return;
-        const isLastQuestion = currentQuestionIndex === (currentQuestions?.length || 0) - 1;
+        if (currentQuestionIndex === questionsData.length - 1) {
+            setShowResult(true);
+            return;
+        }
+        setCurrentQuestionIndex(prev => prev + 1);
+        setSelectedOption(null);
+        setChecked(false);
+        setCheckResult(null);
+    };
 
+    const handleOnComplete = useCallback(async () => {
+        try {
+            // Prepare the data to send to Supabase
+            const onboardingData = {
+                progress: 1, // Always set progress to 1 when quiz is completed
+                level: allCorrect ? 2 : 1 // Set level to 2 if all correct, otherwise 1
+            };
 
-        if (isLastQuestion) {
-            const currentCategoryIndex = categoryOrder.indexOf(currentCategory);
-            const nextCategoryIndex = currentCategoryIndex + 1;
-            const categoryQuestions = questions[currentCategory];
-            const allQuestionsAnswered = categoryQuestions?.every(q => selectedOptions[q.question]); // Check if every question has a selected option
+            // Get the current user's session
+            const { data: { session } } = await supabase.auth.getSession();
 
-             if (!allQuestionsAnswered) {
-                // Set the level to the last unfinished category
-                setUserLevel(currentCategory);
-                setUnansweredCategories(prev => [...prev, currentCategory])
-                setShowAnalysis(true);
-                setAnalysisProgress(calculateProgressPercentage())
-                setSelectedOptions({});
+            if (!session) {
+                console.error('No active session');
                 return;
             }
 
-            if (nextCategoryIndex < categoryOrder.length) {
-                setCurrentCategory(categoryOrder[nextCategoryIndex]);
-                setCurrentQuestionIndex(0);
-                setTypedText("");
-                setSelectedOptions({});
-            } else {
-                setUserLevel('advanced');
-                setQuizComplete(true);
-                setShowAnalysis(true);
-                setAnalysisProgress(calculateProgressPercentage());
-                setSelectedOptions({});
+            // Retrieve the user's email from the session
+            const userEmail = session.user.email;
+
+            if (!userEmail) {
+                console.error('No email found in session');
+                return;
             }
-            return
+
+            // Update the user's progress and level in Supabase using email
+            const { data, error } = await supabase
+                .from('users')
+                .update(onboardingData)
+                .eq('email', userEmail);
+
+            if (error) {
+                throw error;
+            }
+
+            console.log('Onboarding completed:', onboardingData);
+
+            // Optional: Navigate to next page or perform additional actions
+            router.push('/home');
+
+        } catch (error) {
+            console.error('Error during onboarding:', error);
+            // Handle error (e.g., show error message to user)
         }
-        setCurrentQuestionIndex((prev) => prev + 1);
-        setTypedText("");
-    };
+    }, [allCorrect, router]);
 
-    const handleBack = () => {
-        if (currentQuestionIndex <= 0) return;
-        setTypedText("");
-        setCurrentQuestionIndex((prev) => prev - 1);
-
-    };
-
-    useEffect(() => {
-        if (!currentQuestion) return;
-        const selectedOption = selectedOptions[currentQuestion.question];
-        if (selectedOption === undefined) return;
-        if (processedOptions.current[currentQuestion.question]) return;
-
-        const correctIndex = currentQuestion.answer;
-
-        if (currentQuestion.options.indexOf(selectedOption) === parseInt(correctIndex)) {
-          setCategoryScores(prev => ({
-             ...prev,
-            [currentCategory]: {
-              correct: ((prev[currentCategory]?.correct) || 0) + 1
-              }
-            }));
-        }
-        processedOptions.current[currentQuestion.question] = true;
-    }, [selectedOptions, currentQuestion, currentCategory, currentQuestions]);
-
-    const renderAnalysis = () => {
-
-        const handleReviewContinue = () => {
-            setShowAnalysis(false);
-            if (quizComplete)
-                handleOnComplete(selectedOptions);
-        };
-
-        if (quizComplete)
-            return (
-                <div className='flex items-center justify-center p-4 h-full w-full text-center' >
-                    <div className="max-w-4xl w-full">
-                        <h2 className="text-white font-bold text-xl">Quiz completed!</h2>
-                        <p className="text-gray-400 pt-2 text-lg">
-                            Your level has been set to: <strong>{userLevel}</strong>
-                        </p>
-                        <div className='pt-10 flex flex-col items-center'>
-                            {categoryOrder.map(cat => (
-                                <div key={cat} style={{ margin: 10 }}>
-                                    <div style={{ display: 'flex', gap: 20, alignItems: "center" }}>
-                                        <CircularProgress variant="determinate" size={80} value={calculateCategoryAccuracy(cat) * 100} style={{ color: "lightgreen" }} />
-                                        <span style={{ color: 'white' }}> {cat} correct {categoryScores[cat]?.correct || 0}/{questions[cat]?.length} </span>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                        <button
-                            onClick={handleReviewContinue}
-                            className="text-white py-2 px-6 h-12 rounded-full border-2 border-green-500 hover:bg-green-500 transition-all duration-500 mt-5"
-                        >Continue
-                        </button>
-                    </div>
-                </div>
-            );
-
-
+    if (showResult) {
         return (
-            <div className='h-full w-full flex items-center  justify-center  '>
-                <div style={{ display: "flex", gap: 10, justifyContent: 'center', flexDirection: "column" }}>
-                    <h2 className='text-center text-white font-bold text-xl '>Current section complete</h2>
-                     {
-                    unansweredCategories.length > 0 &&  (
-                    <p className="text-gray-400 pt-2 text-lg text-center">
-                            Your level has been set to: <strong>{userLevel}</strong>
+            <div className="fixed inset-0 bg-gray-900 flex items-center justify-center p-4">
+                <div className="max-w-md w-full text-center">
+                    <h2 className="text-white font-bold text-xl">Quiz completed!</h2>
+                    <p className="text-gray-400 pt-2 text-lg">
+                        {allCorrect ? "You have covered fundamentals" : "Your level is set to beginner"}
                     </p>
-                    )
-                }
-                    <div style={{ display: 'flex', gap: 20, justifyContent: "center", alignItems: "center", marginBottom: 10 }}  >
-                        <CircularProgress variant="determinate" value={analysisProgress} style={{ color: "lightgreen" }} size={80} />
-                        {
-                        unansweredCategories.length === 0 && (
-                            <span style={{ color: 'white' }}>Your level is : <strong>{userLevel}</strong> </span>
-                        )
-
-                    }
-                    </div>
-                    <div className='flex flex-col items-center'>
-                        {categoryOrder.map(cat => (
-                             !unansweredCategories.includes(cat) && (
-                            <div key={cat} style={{ margin: 10 }}>
-                                <div style={{ display: 'flex', gap: 20, alignItems: "center" }}>
-                                    <CircularProgress variant="determinate" size={80} value={calculateCategoryAccuracy(cat) * 100} style={{ color: "lightgreen" }} />
-                                    <span style={{ color: 'white' }}> {cat} correct {categoryScores[cat]?.correct || 0}/{questions[cat]?.length} </span>
-                                </div>
-                            </div>
-                             )
-                        ))}
-                    </div>
                     <button
-                        onClick={handleReviewContinue}
-                        className="text-white py-2 px-6 h-12 rounded-full border-2 border-green-500 hover:bg-green-500 transition-all duration-500 mt-5 "
-                    >
-                        Continue to Next Category
+                        onClick={() => handleOnComplete({})}
+                        className="text-white py-2 px-6 h-12 rounded-full border-2 border-green-500 hover:bg-green-500 transition-all duration-500 mt-5"
+                    >Continue
                     </button>
                 </div>
             </div>
         );
-    };
-
-     if (showAnalysis) return renderAnalysis()
+    }
 
     return (
-        <div className="fixed inset-0 bg-gray-900 flex flex-col items-between justify-between p-4 md:p-8">
+        <div className="fixed inset-0 bg-gray-900 flex flex-col p-4 md:p-8">
             {/* Progress Section */}
             <div className='w-full flex items-center justify-center rounded-full border-b-2 border-green-500 h-16 md:h-24'>
                 <div className="w-full max-w-7xl flex items-center space-x-4">
-                    {currentQuestionIndex > 0 && (
-                        <button
-                            onClick={handleBack}
-                            className="text-white hover:text-green-500 hover:bg-gray-700 p-2 rounded-full transition-all duration-500"
-                        >
-                            <ChevronLeft size={24} />
-                        </button>
-                    )}
                     <div className="flex-grow bg-gray-700 h-2 rounded-full overflow-hidden">
                         <div
                             className="bg-green-500 h-full transition-all duration-300"
-                            style={{ width: `${calculateProgressPercentage()}%` }}
+                            style={{ width: `${progress}%` }}
                         />
                     </div>
                 </div>
             </div>
-            {/* Content Section */}
-            <div className="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-8 max-w-3xl w-full mx-auto">
-                {/* Character */}
-                <div className="flex-shrink-0">
-                    {currentQuestion?.character}
-                </div>
 
-                {/* Question Container */}
-                <div className='flex flex-col items-baseline space-y-4 w-full md:w-auto'>
-                    {/* Question Text */}
-                    <div className="flex items-center space-x-2 border-l border-r-2 border-y-2 border-green-500 px-4 py-2 mb-4 rounded-r-2xl">
-                        <h2 className="text-xl font-bold text-white">
-                            {typedText}
-                        </h2>
-                    </div>
-
-                    {/* Options */}
-                    <div className="flex-grow bg-white/10 backdrop-blur-sm rounded-3xl p-6 shadow-lg relative w-full">
+            {/* Question and Options */}
+            <div className="flex flex-col items-center justify-center flex-1">
+                {currentQuestion && (
+                    <div className="max-w-3xl w-full space-y-6">
+                        <h2 className="text-xl font-bold text-white text-center">{currentQuestion.question}</h2>
+                        <p className='text-gray-400 text-center'>{currentQuestion.description}</p>
                         <div className="space-y-4">
-                            {currentQuestion?.options?.map((option, index) => (
+                            {currentQuestion.options.map((option, index) => (
                                 <button
                                     key={index}
                                     onClick={() => handleOptionSelect(option)}
+                                    disabled={checked}
                                     className={`w-full text-left p-4 rounded-xl border-2 transition 
-                      ${selectedOptions[currentQuestion?.question] === option
-                                            ? 'bg-green-100 border-green-500 text-green-500'
-                                            : 'border-gray-200 bg-gray-900 text-white hover:bg-gray-700'}`}
+                                            ${selectedOption === option
+                                            ? checked ? (currentQuestion.options.indexOf(option) === parseInt(currentQuestion.answer) ? 'bg-green-100 border-green-500 text-green-500' : 'bg-red-100 border-red-500 text-red-500') : 'bg-green-100 border-green-500 text-green-500'
+                                            : checked && currentQuestion.options.indexOf(option) === parseInt(currentQuestion.answer) ? 'bg-green-100 border-green-500 text-green-500' : 'border-gray-200 bg-gray-900 text-white hover:bg-gray-700'}`}
                                 >
                                     {option}
                                 </button>
                             ))}
                         </div>
+                        {checkResult && (
+                            <p className={`mt-4 text-center font-bold ${checkResult === 'Correct' ? 'text-green-500' : 'text-red-500'}`}>
+                                {checkResult}
+                            </p>
+                        )}
                     </div>
-                </div>
+                )}
             </div>
 
-            {/* Continue Section */}
+
+            {/* Controls Section */}
             <div className="w-full text-white p-2 rounded-full transition border-t-2 border-green-500 h-16 md:h-24 flex justify-end items-center">
-                {selectedOptions[currentQuestion?.question] && (
-                    <button
-                        onClick={handleContinue}
-                        className="text-white py-2 px-6 h-12 rounded-full border-2 border-green-500 hover:bg-green-500 transition-all duration-500 flex items-center space-x-2"
-                    >
-                        <ArrowRight size={24} />
-                        <span>Continue</span>
-                    </button>
-                )}
+                {
+                    !checked ?
+                        (
+                            <button
+                                disabled={!selectedOption}
+                                onClick={handleCheck}
+                                className={`text-white py-2 px-6 h-12 rounded-full border-2  transition-all duration-500  ${selectedOption ? ' border-yellow-500 hover:bg-yellow-500' : 'border-gray-700  bg-gray-700 cursor-not-allowed'}`}
+                            >
+                                Check
+                            </button>
+                        )
+                        :
+                        (
+                            <button
+                                onClick={handleContinue}
+                                className="text-white py-2 px-6 h-12 rounded-full border-2 border-green-500 hover:bg-green-500 transition-all duration-500  flex items-center space-x-2"
+                            >
+                                <ArrowRight size={24} />
+                                <span>Continue</span>
+                            </button>
+                        )
+                }
             </div>
         </div>
     );
 };
+
 export default QuizInterface;
