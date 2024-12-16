@@ -41,7 +41,7 @@ const Status = ({ onButtonClick }) => {
         try {
             const { error } = await supabase
                 .from("users")
-                .update({ level: 0 })
+                .update({ level: 0, progress: 1 })
                 .match({ email: user.email });
 
             if (error) {

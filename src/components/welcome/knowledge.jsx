@@ -37,7 +37,7 @@ const Knowledge = ({ onButtonClick }) => {
         try {
             const { error } = await supabase
                 .from("users")
-                .update({ level: 2 })
+                .update({ level: 2, progress: 1 })
                 .match({ email: user.email });
 
             if (error) {
@@ -53,7 +53,7 @@ const Knowledge = ({ onButtonClick }) => {
         try {
             const { error } = await supabase
                 .from("users")
-                .update({ level: 1 })
+                .update({ level: 1, progress: 1 })
                 .match({ email: user.email });
 
             if (error) {
