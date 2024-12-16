@@ -70,7 +70,7 @@ const Knowledge = ({ onButtonClick }) => {
 
     const handleContinue = () => {
         if (selectedstatus) {
-            router.push("/learn");
+            router.push("/home");
         }
     };
 
