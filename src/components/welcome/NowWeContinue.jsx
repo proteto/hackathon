@@ -34,12 +34,12 @@ const NowWeContinue = ({ onButtonClick }) => {
     return (
         <div className="fixed inset-0 bg-gray-900 flex items-center justify-center p-8">
             <div className="flex flex-col justify-center">
-                <h2 className="text-3xl font-bold mb-6 text-green-500 capitalize">
+                <h2 className="text-3xl font-bold mb-6 text-green-500 text-left capitalize">
                     {typedText}
                 </h2>
                 <button
                     onClick={handleContinue}
-                    className="mt-6 w-full bg-green-500 cursor-pointer focus:ring-2 text-white p-3 rounded-full hover:bg-green-600 transition flex items-center justify-center"
+                    className="fixed bottom-10 left-1/2 transform -translate-x-1/2 w-fit bg-green-500 cursor-pointer focus:ring-2 text-white py-3 px-10 rounded-full hover:bg-green-600 transition flex items-center justify-center"
                 >
                     Continue <ArrowRight size={20} className="ml-2" />
                 </button>

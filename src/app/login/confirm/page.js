@@ -31,9 +31,9 @@ export default function Confirm() {
 
       // Redirect based on user progress
       if (data.progress === "0") {
-        router.push("/GreetingQuestions");
+        router.push("/welcome");
       } else if (data.progress === "1") {
-        router.push("/quiz");
+        router.push("/home");
       } else {
         console.log('No appropriate page for the user');
       }

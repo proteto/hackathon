@@ -9,6 +9,7 @@ import {
     Settings,
     MessageCircleQuestion
 } from 'lucide-react';
+import Image from 'next/image';
 
 const SideBar = () => {
     const [activeTab, setActiveTab] = useState('home');
@@ -60,24 +61,23 @@ const SideBar = () => {
         <div
             key={item.key}
             onClick={() => setActiveTab(item.key)}
-            className={`relative flex flex-row items-center justify-center px-6 py-3 cursor-pointer rounded-lg  transition-all duration-200 ${activeTab === item.key ? 'bg-green-100 text-green-600' : 'hover:bg-gray-100 text-gray-600'} `} >
+            className={` relative flex flex-row items-center justify-center px-6 py-1 cursor-pointer rounded-xl transition-all duration-200 ${activeTab === item.key ? 'bg-gray-800 text-green-600 ring-2 ring-green-600' : 'hover:bg-gray-800 text-gray-600'}`}>
             <item.icon
-                size={28}
+                size={40}
                 className={activeTab === item.key ? 'text-green-600' : 'text-gray-600'}
             />
-            <span className="text-xs mt-1 w-44">{item.name}</span>
-
-            {item.hasNotification && (
-                <div className=" absolute top-2 right-2  w-3 h-3  bg-red-500  rounded-full " />
-            )}
+            <span className="text-md font-bold ml-4 w-44 uppercase leading-relaxed tracking-wide">{item.name}</span>
         </div>
     );
 
     return (
         <div
-            className=" fixed left-0 top-0 bottom-0  w-56  bg-gray-900 border-r  flex flex-col  justify-between  py-4 shadow-md " >
-            <div className="flex flex-col space-y-2">
-                {sidebarItems.map(renderSidebarIcon)}
+            className="fixed left-0 top-0 bottom-0 w-64 bg-gray-900 border-r-2 border-green-500 flex flex-col justify-between py-4 shadow-md ">
+            <div className="flex flex-col space-y-2 px-3">
+                <h1 className="w-full px-6 text-2xl font-extrabold py-4 text-green-600">E-ALIM</h1>
+                <div className="flex flex-col space-y-2 px-1">
+                    {sidebarItems.map(renderSidebarIcon)}
+                </div>
             </div>
 
             <div className="flex flex-col space-y-2">
