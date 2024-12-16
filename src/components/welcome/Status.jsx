@@ -50,7 +50,7 @@ const Status = ({ onButtonClick }) => {
         } catch (error) {
             console.error("Error during updating country:", error);
         }
-        router.push("/learn");
+        router.push("/home");
     };
 
     const handleCheckMyLevel = () => {
@@ -64,7 +64,7 @@ const Status = ({ onButtonClick }) => {
             try {
                 const { error } = await supabase
                     .from("users")
-                    .update({ status: selectedstatus })
+                    .update({ level: 1 })
                     .match({ email: user.email });
 
                 if (error) {

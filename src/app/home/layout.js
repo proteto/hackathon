@@ -16,7 +16,8 @@ const geistMono = Geist_Mono({
     subsets: ["latin"],
 });
 
-export default function Layout({ children }) {
+export default function HomeLayout({ children }) {
+
     const [user, setUser] = useState(null);
 
     useEffect(() => {
@@ -33,11 +34,16 @@ export default function Layout({ children }) {
     }, []);
 
     return (
-        <>
+        <div className="flex flex-row items-center justify-center bg-white dark:bg-[#1d1d1d] pl-56">
             <SideBar />
-            <div>{children}</div>
-        </>
+            <div className="w-full max-w-[calc(100vw-16rem)]">
+                {/* Content area */}
+                <div className="w-full ml-4 bg-gray-900 min-h-screen">
+                    <div className="flex flex-col bg-gray-900 rounded-xl overflow-y-auto h-fit py-10 px-10">
+                        {children}
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 }
-
-
