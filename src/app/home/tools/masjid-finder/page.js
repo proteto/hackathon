@@ -98,7 +98,7 @@ const MasjidFinder = () => {
         const placesService = new window.google.maps.places.PlacesService(map);
         const request = {
             location: userLocation,
-            radius: 5000, // Increased search radius to 5km
+            radius: 500, 
             type: 'mosque',
         };
 

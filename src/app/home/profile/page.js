@@ -1,81 +1,130 @@
 "use client";
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from '@/app/createClient';
+import { MapPin, Pencil } from 'lucide-react';
+import Image from 'next/image';
+
+// Separate Component for Profile Header
+const ProfileHeader = ({ level, country }) => (
+    <div className="flex justify-between p-4 bg-gray-700 border-b border-gray-600">
+        <div className="flex items-center space-x-3">
+            <div className="bg-green-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold">
+                {level}
+            </div>
+        </div>
+        <div className="text-gray-300 flex items-center">
+            <MapPin className="h-5 w-5 mr-2" />
+            {country}
+        </div>
+    </div>
+);
 
 const UserProfile = () => {
     const [userData, setUserData] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [editedName, setEditedName] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    const fetchUser = async (email) => {
+        try {
+            const { data: user, error } = await supabase
+                .from('users')
+                .select('name, country, level, email')
+                .eq('email', email)
+                .single();
+
+            if (error) {
+                setError('Error fetching user data.');
+                return null;
+            }
+
+            return user;
+        } catch (err) {
+            setError('An unexpected error occurred.');
+            return null;
+        }
+    };
 
     useEffect(() => {
-        const fetchUserData = async () => {
+        const loadUserData = async () => {
+            setLoading(true);
+            setError(null);
+
             const { data: { session } } = await supabase.auth.getSession();
 
             if (session) {
-                const { data: user } = await supabase
-                    .from('users')
-                    .select('name, country, level')
-                    .eq('email', session.user.email)
-                    .single();
+                const user = await fetchUser(session.user.email);
 
                 if (user) {
                     setUserData({
                         name: user.name,
                         country: user.country,
                         level: user.level,
+                        email: user.email,
                         progress: 65,
-                        avatarUrl: "/api/placeholder/200/200"
                     });
                     setEditedName(user.name);
+                } else if (!error) {
+                    setError('User not found.');
                 }
+            } else {
+                setError('No session found, please login');
             }
+            setLoading(false);
         };
 
-        fetchUserData();
+        loadUserData();
     }, []);
 
     const handleNameSave = async () => {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-            await supabase
-                .from('users')
-                .update({ name: editedName })
-                .eq('email', session.user.email);
+        if (!editedName.trim()) {
+            alert('Name cannot be empty.');
+            return;
+        }
 
-            setUserData(prev => ({ ...prev, name: editedName }));
-            setIsEditing(false);
+        setLoading(true);
+        setError(null);
+
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                await supabase
+                    .from('users')
+                    .update({ name: editedName.trim() })
+                    .eq('email', session.user.email);
+
+                setUserData(prev => ({ ...prev, name: editedName.trim() }));
+                setIsEditing(false);
+                setLoading(false);
+            }
+        } catch (err) {
+            setError('Failed to update name.');
+            setLoading(false);
         }
     };
+
+    const handleCancelEdit = () => {
+        setEditedName(userData.name);
+        setIsEditing(false);
+    }
+
+    if (loading) {
+        return <div className="bg-gray-900 flex justify-center p-4 rounded-xl min-h-screen items-center font-sans">Loading...</div>
+    }
+
+    if (error) {
+        return <div className="bg-gray-900 flex justify-center p-4 rounded-xl min-h-screen items-center font-sans">Error: {error}</div>;
+    }
 
     if (!userData) return null;
 
     return (
-        <div className="bg-gray-800 flex justify-start p-4 rounded-xl max-h-screen">
-            <div className="w-full max-w-md bg-white shadow-sm rounded-xl overflow-hidden shadow-gray-500">
-                {/* Header with Level and Country */}
-                <div className="flex justify-between p-4 bg-gray-900 border-b">
-                    <div className="flex items-center space-x-3">
-                        <div className="bg-green-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold">
-                            {userData.level}
-                        </div>
-                    </div>
-                    <div className="text-gray-200 flex items-center">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5 mr-2"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                        >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                        {userData.country}
-                    </div>
-                </div>
+        <div className="bg-gray-900 flex justify-center p-4 rounded-xl min-h-screen items-center font-sans">
+            <div className="w-full max-w-md bg-gray-800 shadow-md rounded-xl overflow-hidden">
+                <ProfileHeader level={userData.level} country={userData.country} />
 
-                {/* Name Section */}
-                <div className="flex flex-col items-center py-6 px-4 bg-gray-800">
+                <div className="flex flex-col items-center py-6 px-4">
                     {/* Name Editing */}
                     <div className="flex items-center">
                         {isEditing ? (
@@ -84,42 +133,38 @@ const UserProfile = () => {
                                     type="text"
                                     value={editedName}
                                     onChange={(e) => setEditedName(e.target.value)}
-                                    className="border px-2 py-1 rounded text-center"
+                                    className="border px-2 py-1 rounded text-center bg-gray-700 text-white focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
                                 />
                                 <br />
                                 <button
                                     onClick={handleNameSave}
-                                    className="bg-green-500 text-white px-3 py-2 rounded text-sm hover:bg-green-600"
+                                    className="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded text-sm transition-all duration-300"
                                 >
                                     Save
                                 </button>
                                 <button
-                                    onClick={() => setIsEditing(false)}
-                                    className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+                                    onClick={handleCancelEdit}
+                                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm transition-all duration-300"
                                 >
                                     Cancel
                                 </button>
                             </div>
                         ) : (
                             <div className="flex items-center">
-                                <h2 className="text-2xl font-bold mr-2">{userData.name}</h2>
+                                <h2 className="text-2xl font-bold mr-2 text-white">{userData.name}</h2>
                                 <button
                                     onClick={() => setIsEditing(true)}
-                                    className="text-gray-500 hover:text-gray-700"
+                                    className="text-gray-400 hover:text-gray-300 focus:outline-none transition-colors duration-300"
                                 >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="h-5 w-5"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                    >
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                    </svg>
+                                    <Pencil className="h-5 w-5" />
                                 </button>
                             </div>
                         )}
                     </div>
+                    {/* Email Display */}
+                    <p className="text-gray-400 mt-2">
+                        {userData.email}
+                    </p>
                 </div>
             </div>
         </div>
@@ -127,4 +172,3 @@ const UserProfile = () => {
 };
 
 export default UserProfile;
-

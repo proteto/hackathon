@@ -47,6 +47,7 @@ export default function Confirm() {
     const checkAndAddUser = async () => {
       try {
         const user = (await supabase.auth.getUser()).data.user;
+        console.log("user", user);
 
         if (!user) {
           console.error('No user found');
