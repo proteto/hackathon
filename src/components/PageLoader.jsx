@@ -40,7 +40,7 @@ const PageLoader = () => {
         transition-all duration-500 ease-in-out
         ${isLoading ? 'opacity-100' : 'opacity-0'}
       `}>
-      <p className='text-center text-green-500 font-extrabold uppercase text-3xl mb-4 '> Alim </p>
+      <p className='text-center text-green-500 font-extrabold uppercase text-3xl mb-4 '> E - Alim </p>
       <div 
         className="h-3 rounded-full overflow-hidden w-96 bg-green-500 transform origin-left"
         style={{

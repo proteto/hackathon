@@ -97,8 +97,8 @@ export default function Confirm() {
 
   return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center p-6">
-      <div className="text-center">
-        <h2 className="text-3xl font-bold text-white">
+      <div className="text-center flex flex-row">
+        <h2 className="text-3xl font-bold text-white mr-4">
           Login successful
         </h2>
         <CircularProgress color="success" />

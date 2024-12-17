@@ -43,17 +43,19 @@ const Home = () => {
         <div className="bg-gray-800 shadow-xl rounded-2xl overflow-hidden flex flex-col md:flex-row">
           {/* Left Side - Image Section */}
           <div className="md:w-1/2 bg-gray-900 flex items-center justify-center p-8">
-            <div className="text-center">
-              <Image 
-                src="/muslim.png" 
-                alt="Alim Logo" 
-                width={300} 
-                height={300} 
-                priority
-                className="rounded-full border-4 border-indigo-500 shadow-lg" 
-              />
-              <h2 className="text-3xl font-bold text-white mt-6">
-                Welcome to Alim
+            <div className="text-center mx-auto">
+              <div className='w-full'>
+                <Image
+                  src="/muslim.png"
+                  alt="Alim Logo"
+                  width={300}
+                  height={300}
+                  priority
+                  className="rounded-full border-4 border-green mx-auto shadow-lg"
+                />
+              </div>
+              <h2 className="text-3xl font-bold text-white mt-6 uppercase">
+                Welcome to <span className='text-green-500 font-extrabold'> E - Alim</span>
               </h2>
               <p className="text-gray-400 mt-4 leading-relaxed">
                 Your comprehensive guide to supporting and empowering your spiritual journey.
@@ -75,36 +77,36 @@ const Home = () => {
 
               <div className="space-y-4">
                 <div>
-                  <label 
-                    htmlFor="email" 
+                  <label
+                    htmlFor="email"
                     className="block text-sm font-medium text-gray-400 mb-2"
                   >
                     Email Address
                   </label>
-                  <input 
-                    type="email" 
-                    id="email" 
+                  <input
+                    type="email"
+                    id="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="w-full px-4 py-3 rounded-lg border border-gray-700 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300 ease-in-out" 
+                    className="w-full px-4 py-3 rounded-lg border border-gray-700 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300 ease-in-out"
                   />
                 </div>
 
                 <div>
-                  <label 
-                    htmlFor="password" 
+                  <label
+                    htmlFor="password"
                     className="block text-sm font-medium text-gray-400 mb-2"
                   >
                     Password
                   </label>
-                  <input 
-                    type="password" 
-                    id="password" 
+                  <input
+                    type="password"
+                    id="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="w-full px-4 py-3 rounded-lg border border-gray-700 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300 ease-in-out" 
+                    className="w-full px-4 py-3 rounded-lg border border-gray-700 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300 ease-in-out"
                   />
                 </div>
               </div>
@@ -113,7 +115,7 @@ const Home = () => {
 
               <div>
                 <Button
-                  type="submit" 
+                  type="submit"
                   variant="contained"
                   color="primary"
                   className="w-full py-3 rounded-full bg-green-600 hover:bg-green-700 transition-all duration-300 ease-in-out text-white font-semibold"
